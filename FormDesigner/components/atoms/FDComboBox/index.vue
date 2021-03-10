@@ -1931,7 +1931,7 @@ export default class FDComboBox extends Mixins(FdControlVue) {
   display: grid;
 }
 .thClass {
-  display: inline-block;
+  display: block;
   z-index: 3;
   margin-right: auto;
   /* position: sticky; */
@@ -1968,9 +1968,11 @@ export default class FDComboBox extends Mixins(FdControlVue) {
   background-image: none;
 }
 .tHeadStyle {
+  width: auto !important;
+  white-space: nowrap;
   position: sticky;
   top: 0px;
-  z-index: 1;
+  z-index: 3 !important;
 }
 .square {
   border-bottom: 1px solid;
@@ -1984,8 +1986,22 @@ export default class FDComboBox extends Mixins(FdControlVue) {
 }
 .colHeadsClass {
   display: inline-block !important;
-  width: 100px;
-  overflow: auto;
+  padding-left: 3px;
+  border-left: 1px solid black;
+  border-right: 0px solid black !important;
+  border-bottom: 1px solid black;
+}
+.hr-line {
+    display: inline-block ;
+    z-index: 3;
+    position: relative;
+    /* vertical-align: text-top !important; */
+    /* left: -325px; */
+    background-color: black;
+    width: 100% !important;
+    height: 0px;
+    margin: 0;
+    /* border-bottom: 0px solid black; */
 }
 .bar {
   font-size: 13px;

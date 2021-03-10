@@ -212,7 +212,6 @@
                   <span v-if="i < 10" class="bar" :style="{ float: 'right', color: properties.ForeColor}" :key="i">|</span>
                 </div>
                 </div>
-                <!-- <div class="hr-line" v-if="properties.ColumnHeads" :style="hrStyleObj"></div> -->
                 <hr v-if="properties.ColumnHeads" class="hrStyle" :style="hrStyleObj"/>
               </div>
             </div>
@@ -338,23 +337,8 @@ export default class FDComboBox extends Mixins(FdControlVue) {
   }
   get hrStyleObj () {
     const controlProp = this.properties
-    let width = '100%'
-    if (this.properties.ListStyle === 1) {
-      if ((this.trRef && this.trRef) && (this.comboRef && this.comboRef.children[0] && this.comboRef.children[0].children[0])) {
-        if (this.trRef.scrollWidth > this.comboRef.children[0].children[0].scrollWidth) {
-          width = this.trRef.scrollWidth + 'px'
-        } else if (this.properties.Width! > this.trRef.scrollWidth) {
-          width = controlProp.Width! + 'px'
-        } else {
-          width = this.comboRef.children[0].children[0].scrollWidth + 'px'
-        }
-      }
-    } else {
-      width = '100%'
-    }
     return {
-      borderBottom: '1px solid' + controlProp.ForeColor,
-      width: width
+      borderTop: '1px solid' + controlProp.ForeColor
     }
   }
   mouseOverEvent (e: MouseEvent) {
@@ -394,10 +378,8 @@ export default class FDComboBox extends Mixins(FdControlVue) {
     if (this.properties.RowSource !== '') {
       return {
         textAlign: controlProp.TextAlign === 0 ? 'left' : controlProp.TextAlign === 2 ? 'right' : 'center',
-        borderLeft: index >= this.extraDatas.ColumnHeadsValues!.length ? '' : (index < controlProp.ColumnCount!) ? '1px solid' : controlProp.ColumnCount === -1 ? (index < this.extraDatas.RowSourceData![0].length) ? '1px solid' : '' : '',
-        borderLeftColor: controlProp.ForeColor,
-        borderBottom: index >= this.extraDatas.ColumnHeadsValues!.length ? '' : (index < controlProp.ColumnCount! - 1) ? '1px solid' : controlProp.ColumnCount === -1 ? (index < this.extraDatas.RowSourceData![0].length) ? '0.5px solid' : '' : '',
-        borderBottomColor: controlProp.ForeColor,
+        borderRight: index >= this.extraDatas.ColumnHeadsValues!.length - 1 ? '' : (index < controlProp.ColumnCount! - 1) ? '1px solid' : controlProp.ColumnCount === -1 ? (index < this.extraDatas.RowSourceData![0].length - 1) ? '1px solid' : '' : '',
+        borderRightColor: controlProp.ForeColor,
         overflow: 'hidden'
       }
     } else {
@@ -491,11 +473,12 @@ export default class FDComboBox extends Mixins(FdControlVue) {
   }
   get tHeadStyleObj () {
     return {
-      width: this.comboRef.offsetWidth + 'px'
+      width: this.headWidth
     }
   }
 
   updateColumns () {
+    debugger
     if (this.properties.RowSource !== '') {
       let finalWidths:Array<number> = []
       if (this.comboRef && this.comboRef.children[0]) {
@@ -567,9 +550,10 @@ export default class FDComboBox extends Mixins(FdControlVue) {
               }
             } else {
               Vue.nextTick(() => {
+                debugger
                 if (this.comboRef && this.comboRef.children[0] && this.comboRef.children[0].children[0]) {
                   for (let j = 0; j < this.comboRef.children[0].children[0].children.length; j++) {
-                    if (this.comboRef && this.comboRef.children[0] && this.comboRef.children[0].children[0] && this.comboRef.children[0].children[0].children[j]) {
+                    if (this.comboRef && this.comboRef.children[0] && this.comboRef.children[0].children[0] && this.comboRef.children[0].children[0].children[j] && (this.comboRef.children[0].children[0].children[0].className !== 'square')) {
                       const headWidth = this.comboRef.children[0].children[0].children[j] as HTMLDivElement
                       if (this.properties.ColumnCount !== -1) {
                         if (j === this.comboRef.children[0].children[0].children.length - 1) {
@@ -1134,9 +1118,7 @@ export default class FDComboBox extends Mixins(FdControlVue) {
   clearMatchEntry () {
     this.updateDataModelExtraData({ propertyName: 'MatchData', value: '' })
   }
-  scrollable () {
-    return (this.comboRef.scrollWidth) > (this.comboRef.clientWidth)
-  }
+
   protected get selectionSpanObj (): Partial<CSSStyleDeclaration> {
     const controlProp = this.properties
     return {
@@ -1148,12 +1130,9 @@ export default class FDComboBox extends Mixins(FdControlVue) {
 
   protected get colHeadsStyle (): Partial<CSSStyleDeclaration> {
     const controlProp = this.properties
-    this.updateColumns()
     return {
       backgroundColor: controlProp.BackColor,
-      // width: '100%'
-      width: this.trRef.clientWidth + 'px',
-      display: this.scrollable() ? 'inline-block' : 'inherit'
+      width: '100%'
     }
   }
 
@@ -1881,7 +1860,6 @@ export default class FDComboBox extends Mixins(FdControlVue) {
 .tr {
   outline: none;
   display: inline-flex;
-  min-width: calc(100% - 3px);
 }
 .tr:hover:not([disabled]) {
   background-color: rgb(59, 122, 231);
@@ -1945,15 +1923,9 @@ export default class FDComboBox extends Mixins(FdControlVue) {
 }
 .table-style {
   width: calc(100% - 2px);
-  display: grid;
 }
 .thClass {
-  display: inline-block;
-  z-index: 3;
-  margin-right: auto;
-  /* width: auto !important; */
-  /* position: sticky; */
-  margin-bottom: 0px;
+  position: sticky;
   top: 0;
   overflow: hidden;
   text-decoration: underline;
@@ -1961,8 +1933,7 @@ export default class FDComboBox extends Mixins(FdControlVue) {
 }
 .tdClass {
   width: 15px;
-  border-right: 1px solid !important;
-  padding-left: 4px;
+  border-right: 1px solid;
 }
 .tdClassIn {
   width: 10px;
@@ -1973,61 +1944,31 @@ export default class FDComboBox extends Mixins(FdControlVue) {
   margin: 0;
 }
 .hrStyle {
-  display: inline-block !important;
+  display: block !important;
   margin: 0px;
   width: 100% !important;
-  background-color: black;
-  height: 0.5px;
-  z-index: 3;
-  position: relative;
-  border-bottom: 0px !important;
-  /* top: 0%; */
 }
 .forPlain {
   background-image: none;
 }
 .tHeadStyle {
-  width: auto !important;
-  white-space: nowrap;
   position: sticky;
   top: 0px;
-  z-index: 3 !important;
+  z-index: 1;
+}
+.square {
+  border-bottom: 1px solid;
+  border-right: 1px solid;
+  display: inline-block !important;
+  width: 13px !important;
 }
 .column-item {
   white-space: pre;
   display: flex;
 }
-.square {
-  background: black;
-  width: 0px !important;
-  min-width: 0 !important;
-  height: 0px;
-  padding-left: 13px;
-  background-color: white;
-  display: inline-block;
-  border-bottom: 1px solid  ;
-  margin-top: 0px;
-  border-top: 0px;
-  border-left: 0px;
-}
 .colHeadsClass {
-  display: inline-block;
-  padding-left: 3px;
-  border-left: 1px solid black;
-  border-right: 0px solid black !important;
-  border-bottom: 1px solid black;
-}
-.hr-line {
-    display: inline-block ;
-    z-index: 3;
-    position: relative;
-    /* vertical-align: text-top !important; */
-    /* left: -325px; */
-    /* background-color: black; */
-    width: 100% !important;
-    height: 0px;
-    margin: 0;
-    /* border-bottom: 0px solid black; */
+  display: inline-block !important;
+  width: 100px;
 }
 .bar {
   font-size: 13px;

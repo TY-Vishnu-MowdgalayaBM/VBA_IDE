@@ -304,7 +304,6 @@ export default class FDListBox extends Mixins(FdControlVue) {
                       if (this.listBoxTableRef && this.listBoxTableRef.children[0] && this.listBoxTableRef.children[0].children[0] && this.listBoxTableRef.children[0].children[0].children[j] && (this.listBoxTableRef.children[0].children[0].children[j].className !== 'square')) {
                         const headWidth = this.listBoxTableRef.children[0].children[0].children[j] as HTMLDivElement
                         if (this.properties.ColumnCount !== -1) {
-                          debugger
                           if (j === this.listBoxTableRef.children[0].children[0].children.length - 1) {
                             headWidth.style.width = finalWidths[j] - 20 + 'px'
                           } else {

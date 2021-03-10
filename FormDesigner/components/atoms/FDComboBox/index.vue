@@ -380,7 +380,7 @@ export default class FDComboBox extends Mixins(FdControlVue) {
         textAlign: controlProp.TextAlign === 0 ? 'left' : controlProp.TextAlign === 2 ? 'right' : 'center',
         borderLeft: index >= this.extraDatas.ColumnHeadsValues!.length ? '' : (index < controlProp.ColumnCount!) ? '1px solid' : controlProp.ColumnCount === -1 ? (index < this.extraDatas.RowSourceData![0].length) ? '1px solid' : '' : '',
         borderLeftColor: controlProp.ForeColor,
-        borderBottom: index >= this.extraDatas.ColumnHeadsValues!.length ? '' : (index < controlProp.ColumnCount! - 1) ? '1px solid' : controlProp.ColumnCount === -1 ? (index < this.extraDatas.RowSourceData![0].length) ? '0.5px solid' : '' : '',
+        borderBottom: index >= this.extraDatas.ColumnHeadsValues!.length ? '' : (index < controlProp.ColumnCount! - 1) ? '1.5px solid' : controlProp.ColumnCount === -1 ? (index < this.extraDatas.RowSourceData![0].length) ? '1.5px solid' : '' : '',
         borderBottomColor: controlProp.ForeColor,
         overflow: 'hidden'
       }
@@ -1987,9 +1987,9 @@ export default class FDComboBox extends Mixins(FdControlVue) {
 .colHeadsClass {
   display: inline-block !important;
   padding-left: 3px;
-  border-left: 1px solid black;
+  border-left: 1px solid;
   border-right: 0px solid black !important;
-  border-bottom: 1px solid black;
+  border-bottom: 1.5px solid;
 }
 .hr-line {
     display: inline-block ;

@@ -1,0 +1,3 @@
+interface rootState {
+  fd: fdState
+}

@@ -1,0 +1,3 @@
+interface FdControlVue {
+    propControlData: controlData
+}

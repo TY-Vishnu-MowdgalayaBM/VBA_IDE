@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+    <g fill="none" fill-rule="evenodd">
+        <path fill="#5E83F4" fill-rule="nonzero" d="M3 13L3 14 11 14 11 13 12 13 12 16 11 16 11 15 3 15 3 16 2 16 2 13z"/>
+        <path fill="#5E83F4" fill-rule="nonzero" d="M10.503 5.492L10.503 6.492 18.503 6.492 18.503 5.492 19.503 5.492 19.503 8.492 18.503 8.492 18.503 7.492 10.503 7.492 10.503 8.492 9.503 8.492 9.503 5.492z" transform="rotate(-90 14.503 6.992)"/>
+        <path class="change" fill="#525252" fill-opacity=".75" d="M12 2v10H2V2h10zm-1 1H3v8h8V3z"/>
+        <path class="change" fill="#525252" fill-opacity=".75" d="M9 1L1 1 1 9 0 9 0 0 9 0z"/>
+    </g>
+</svg>

@@ -1,0 +1,11 @@
+<svg version="1.0" xmlns="http://www.w3.org/2000/svg" id="ra" class="leftRightArrow"
+        viewBox="0 0 460.000000 810.000000"
+        preserveAspectRatio="xMidYMid meet">
+          <g class="foreColor"
+          transform="translate(0.000000,810.000000) scale(0.100000,-0.100000)"
+          stroke="none">
+            <path d="M5 8018 c-3 -7 -4 -1797 -3 -3978 3 -3515 5 -3965 18 -3967 8 -2
+            1041 886 2295 1972 1874 1623 2280 1980 2280 2000 0 20 -408 378 -2280 2004
+            -1254 1090 -2286 1981 -2293 1981 -7 0 -15 -6 -17 -12z"/>
+            </g>
+      </svg>

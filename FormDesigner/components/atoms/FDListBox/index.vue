@@ -151,7 +151,6 @@ export default class FDListBox extends Mixins(FdControlVue) {
 
   get hrStyleObj () {
     const controlProp = this.properties
-    console.log(this.$refs)
     let width = '100%'
     if (this.properties.ListStyle === 1) {
       if ((this.listStyleRef && this.listStyleRef[0]) && (this.listBoxTableRef && this.listBoxTableRef.children[0] && this.listBoxTableRef.children[0].children[0])) {
@@ -166,7 +165,6 @@ export default class FDListBox extends Mixins(FdControlVue) {
     } else {
       width = '100%'
     }
-    debugger
     return {
       borderTop: '1px solid' + controlProp.ForeColor,
       width: this.listBoxTableRef.clientWidth
@@ -177,8 +175,7 @@ export default class FDListBox extends Mixins(FdControlVue) {
     const controlProp = this.properties
     this.updateColumns()
     return {
-      backgroundColor: controlProp.BackColor,
-      width: this.listBoxTableRef.clientWidth
+      backgroundColor: controlProp.BackColor
     }
   }
 
@@ -1430,7 +1427,8 @@ export default class FDListBox extends Mixins(FdControlVue) {
   margin: 0;
 }
 .thead {
-  display: inline-block;
+  /* width: auto !important; */
+  display: block;
   z-index: 3;
   margin-right: auto;
   /* position: sticky; */
@@ -1455,7 +1453,7 @@ export default class FDListBox extends Mixins(FdControlVue) {
 .hrStyle {
   display: inline-block !important;
   margin: 0px;
-  /* width: 100% !important; */
+  width: 100% !important;
   background-color: black;
   height: 0px;
   z-index: 3;

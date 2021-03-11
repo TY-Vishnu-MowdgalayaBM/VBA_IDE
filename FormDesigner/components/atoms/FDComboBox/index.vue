@@ -425,6 +425,154 @@ export default class FDComboBox extends Mixins(FdControlVue) {
     }
   }
 
+  @Watch('properties.TextColumn', { deep: true })
+  textColumnChange () {
+    debugger
+    for (let i = 0; i < this.extraDatas.RowSourceData!.length; i++) {
+      for (let j = 0; j < this.trRef[i].children.length; j++) {
+        const a = this.trRef[i].children[j] as HTMLDivElement
+        if (a.innerText === this.properties.Value) {
+          if (this.properties.TextColumn === -1) {
+            const text = this.extraDatas.RowSourceData![i][0]
+            this.updateDataModel({ propertyName: 'Text', value: text })
+          } else if (this.properties.TextColumn === 0) {
+            this.updateDataModel({ propertyName: 'Text', value: i })
+          } else if (this.properties.TextColumn! > 0 && this.properties.TextColumn! <= this.extraDatas.RowSourceData![0].length) {
+            const text = this.extraDatas.RowSourceData![i][this.properties.TextColumn! - 1]
+            this.updateDataModel({ propertyName: 'Text', value: text })
+          }
+          const x = this.extraDatas.RowSourceData![i][this.properties.BoundColumn! - 1]
+          this.updateDataModel({ propertyName: 'Value', value: x })
+        }
+      }
+    }
+  }
+
+  @Watch('properties.Text', { deep: true })
+  valueUpdateProp (newVal:string, oldVal:string) {
+    const propData: controlProperties = this.properties
+    if (this.properties.BoundColumn === this.properties.TextColumn) {
+      this.updateDataModel({ propertyName: 'Value', value: newVal })
+    }
+  }
+
+  handleMultiSelect (e: MouseEvent) {
+    if (e.target instanceof HTMLTableCellElement || e.target instanceof HTMLTableRowElement || e.target instanceof HTMLDivElement) {
+      this.tempListBoxComboBoxEvent = e
+      const targetElement = e.target
+      const tempData = targetElement.parentElement!.children[0] as HTMLDivElement
+      const tempDataOption = targetElement.parentElement!.children[1] as HTMLDivElement
+      const tempPath = e.composedPath()
+      targetElement.focus()
+      let data = targetElement.innerText
+      let splitData = data.replace(/\t/g, ' ').split(' ')
+      if (this.data.properties.ListStyle === 0) {
+        this.selectionData[0] = tempData.innerText
+      } else {
+        this.selectionData[0] = tempDataOption.innerText
+      }
+      if (this.properties.Enabled && this.properties.Locked === false) {
+        if (this.properties.MultiSelect === 0) {
+          if (this.properties.ControlSource !== '') {
+            this.updateDataModel({ propertyName: 'Text', value: this.selectionData[0] })
+            this.updateDataModel({ propertyName: 'Value', value: this.selectionData[0] })
+          }
+          this.clearOptionBGColorAndChecked(e)
+          this.setOptionBGColorAndChecked(e)
+          let isListStyle = 0
+          this.textColumnChange()
+        } else if (this.properties.MultiSelect === 1) {
+          if (targetElement.tagName === 'INPUT') {
+            this.setOptionBGColorAndChecked(e)
+          } else {
+            this.setOptionBGColorAndChecked(e)
+          }
+        } else if (this.properties.MultiSelect === 2) {
+          if (e.ctrlKey === true) {
+            if (targetElement.tagName === 'INPUT') {
+              this.setOptionBGColorAndChecked(e)
+            } else {
+              this.setOptionBGColorAndChecked(e)
+            }
+          } else if (e.shiftKey === true && this.properties.Value !== '') {
+            let startPoint = 0
+            let endPoint = 0
+            for (let i = 0; i < tempPath.length; i++) {
+              const ele = tempPath[i] as HTMLDivElement
+              if (ele.className === 'table-body') {
+                // extend points start and end
+                for (let j = 0; j < ele.childNodes.length; j++) {
+                  const cd = ele.childNodes[j] as HTMLDivElement
+                  if (cd.innerText === this.properties.Value) {
+                    startPoint = j + 1
+                  }
+                  if (cd.innerText === targetElement.innerText) {
+                    endPoint = j
+                  }
+                }
+                // upward selection start and end swap
+                if (startPoint > endPoint) {
+                  let temp = startPoint
+                  startPoint = endPoint
+                  endPoint = temp
+                }
+                // setting selection
+                for (let k = startPoint; k <= endPoint; k++) {
+                  const node = ele.childNodes[k] as HTMLDivElement
+                  const tempNode = node.childNodes[0].childNodes[0] as HTMLInputElement
+                  node.style.backgroundColor = 'rgb(59, 122, 231)'
+                  if (
+                    this.properties.ListStyle === 1 &&
+             !tempNode.checked
+                  ) {
+                    // tempNode.checked = !tempNode.checked
+                    tempNode.checked = true
+                  }
+                }
+                break
+              }
+            }
+          } else {
+            this.clearOptionBGColorAndChecked(e)
+            this.setOptionBGColorAndChecked(e)
+            this.updateDataModel({ propertyName: 'Value', value: targetElement.innerText })
+          }
+        } else {
+          if (this.properties.ControlSource !== '') {
+            this.updateDataModel({ propertyName: 'Text', value: this.selectionData[0] })
+            this.updateDataModel({ propertyName: 'Value', value: this.selectionData[0] })
+          }
+          this.clearOptionBGColorAndChecked(e)
+          this.setOptionBGColorAndChecked(e)
+          let isListStyle = 0
+        }
+      }
+    } else {
+      if (this.properties.MultiSelect !== 1) {
+        this.clearOptionBGColorAndChecked(e)
+      }
+      this.setOptionBGColorAndChecked(e)
+    }
+    const a = e.currentTarget! as HTMLDivElement
+    this.selectionData[0] = a.innerText
+    for (let i = 0; i < this.extraDatas.RowSourceData!.length; i++) {
+      const b = this.trRef[i].children[0] as HTMLDivElement
+      if (a.innerText === b.innerText) {
+        if (this.properties.TextColumn === -1) {
+          const text = this.extraDatas.RowSourceData![i][0]
+          this.updateDataModel({ propertyName: 'Text', value: text })
+        } else if (this.properties.TextColumn === 0) {
+          this.updateDataModel({ propertyName: 'Text', value: i })
+        } else if (this.properties.TextColumn! > 0 && this.properties.TextColumn! <= this.extraDatas.RowSourceData![0].length) {
+          const text = this.extraDatas.RowSourceData![i][this.properties.TextColumn! - 1]
+          this.updateDataModel({ propertyName: 'Text', value: text })
+        }
+        const x = this.extraDatas.RowSourceData![i][this.properties.BoundColumn! - 1]
+        this.updateDataModel({ propertyName: 'Value', value: x })
+      }
+    }
+  }
+
   @Watch('open')
   openValidate () {
     if (this.open) {
@@ -1813,7 +1961,7 @@ export default class FDComboBox extends Mixins(FdControlVue) {
     this.tempWidth = `${this.properties.Width! + 20}px`
     return this.tempWidth
   }
-  @Watch('properties.Value', { deep: true })
+  @Watch('properties.Value')
   textAndValueUpdateProp (newVal: string, oldVal: string) {
     if (this.properties.AutoSize) {
       this.updateAutoSize()
@@ -1832,14 +1980,14 @@ export default class FDComboBox extends Mixins(FdControlVue) {
             this.updateDataModel({ propertyName: 'Value', value: tempData![i][this.properties.BoundColumn! - 1] })
             break
           } else {
-            if (this.properties.BoundColumn! === 1) {
+            if (this.properties.BoundColumn! === 1 && (this.properties.TextColumn === -1 || this.properties.TextColumn === 1)) {
               this.updateDataModel({ propertyName: 'Text', value: newVal })
             }
           }
         }
       }
       this.selectionData[0] = newVal
-      if (this.properties.BoundColumn! === 1) {
+      if (this.properties.BoundColumn! === 1 && (this.properties.TextColumn === -1 || this.properties.TextColumn === 1)) {
         this.updateDataModel({ propertyName: 'Text', value: newVal })
       } else if (this.properties.BoundColumn! > this.extraDatas.RowSourceData![0].length) {
         this.updateDataModel({ propertyName: 'Value', value: '' })

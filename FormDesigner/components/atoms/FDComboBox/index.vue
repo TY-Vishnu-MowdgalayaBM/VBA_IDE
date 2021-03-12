@@ -182,7 +182,7 @@
                   :style="tdStyleObj"
                   v-if="properties.ListStyle === 1 && properties.RowSource !== ''"
                   class="tdClass"
-                ></template>
+                ><span class="square"></span></template>
                 <template
                   v-for="(a, columnIndex) in extraDatas.ColumnHeadsValues"
                 >
@@ -203,7 +203,7 @@
                   v-if="properties.RowSource === '' && properties.ColumnCount !== -1"
                   :style="emptyColHeads"
                 >
-                <div v-if="properties.ListStyle === 1" :style="{display:'inline-block', width:'20px',height: (emptyColHeadsHeight - 1) + 'px'}">
+                <div v-if="properties.ListStyle === 1" :style="{display:'inline-block', paddingLeft: '13px', width:'20px',height: (emptyColHeadsHeight - 1) + 'px'}">
                 </div>
                 <template v-for="(a, i) in properties.ColumnCount">
                 <div :key="i" :style="{display:'inline-block', width:'100px',height: (emptyColHeadsHeight - 1) + 'px', borderLeft: properties.ColumnCount === 1 ? '' : '1px solid ' + properties.ForeColor}">
@@ -394,13 +394,16 @@ export default class FDComboBox extends Mixins(FdControlVue) {
     if (this.properties.RowSource !== '') {
       return {
         textAlign: controlProp.TextAlign === 0 ? 'left' : controlProp.TextAlign === 2 ? 'right' : 'center',
-        borderRight: index >= this.extraDatas.ColumnHeadsValues!.length - 1 ? '' : (index < controlProp.ColumnCount! - 1) ? '1px solid' : controlProp.ColumnCount === -1 ? (index < this.extraDatas.RowSourceData![0].length - 1) ? '1px solid' : '' : '',
-        borderRightColor: controlProp.ForeColor,
+        borderLeft: index >= this.extraDatas.ColumnHeadsValues!.length ? '' : (index < controlProp.ColumnCount!) ? '1px solid' : controlProp.ColumnCount === -1 ? (index < this.extraDatas.RowSourceData![0].length) ? '1px solid' : '' : '',
+        borderLeftColor: controlProp.ForeColor,
+        borderBottom: index >= this.extraDatas.ColumnHeadsValues!.length ? '' : (index < controlProp.ColumnCount! - 1) ? '1.5px solid' : controlProp.ColumnCount === -1 ? (index < this.extraDatas.RowSourceData![0].length) ? '1.5px solid' : '' : '',
+        borderBottomColor: controlProp.ForeColor,
         overflow: 'hidden'
       }
     } else {
       return {
-        display: 'none'
+        display: 'none',
+        minWidth: this.comboRef.clientWidth
       }
     }
   }
@@ -741,7 +744,7 @@ export default class FDComboBox extends Mixins(FdControlVue) {
   }
   get tHeadStyleObj () {
     return {
-      width: this.headWidth
+      width: this.comboRef.offsetWidth + 'px'
     }
   }
 
@@ -828,10 +831,11 @@ export default class FDComboBox extends Mixins(FdControlVue) {
                 }
               }
             } else {
+              console.log(this.$refs)
               Vue.nextTick(() => {
                 if (this.comboRef && this.comboRef.children[0] && this.comboRef.children[0].children[0]) {
                   for (let j = 0; j < this.comboRef.children[0].children[0].children.length; j++) {
-                    if (this.comboRef && this.comboRef.children[0] && this.comboRef.children[0].children[0] && this.comboRef.children[0].children[0].children[j]) {
+                    if (this.comboRef && this.comboRef.children[0] && this.comboRef.children[0].children[0] && this.comboRef.children[0].children[0].children[j] && (this.comboRef.children[0].children[0].children[j].className !== 'square')) {
                       const headWidth = this.comboRef.children[0].children[0].children[j] as HTMLDivElement
                       if (this.properties.ColumnCount !== -1) {
                         if (j === this.comboRef.children[0].children[0].children.length - 1) {
@@ -1570,9 +1574,12 @@ export default class FDComboBox extends Mixins(FdControlVue) {
 
   protected get colHeadsStyle (): Partial<CSSStyleDeclaration> {
     const controlProp = this.properties
+    this.updateColumns()
+    console.log(this.$refs)
     return {
       backgroundColor: controlProp.BackColor,
       width: '100%'
+      // width: this.trRef.clientWidth + 'px'
     }
   }
 
@@ -2307,6 +2314,7 @@ export default class FDComboBox extends Mixins(FdControlVue) {
   height: 100%;
   background-color: lightgray;
   border: 1px solid gray;
+  overflow: auto;
 }
 .list-outer {
   border: 0.1px solid lightgray;
@@ -2318,6 +2326,7 @@ export default class FDComboBox extends Mixins(FdControlVue) {
 .tr {
   outline: none;
   display: inline-flex;
+  min-width: calc(100% - 3px);
 }
 .tr:hover:not([disabled]) {
   background-color: rgb(59, 122, 231);
@@ -2381,9 +2390,14 @@ export default class FDComboBox extends Mixins(FdControlVue) {
 }
 .table-style {
   width: calc(100% - 2px);
+  display: grid;
 }
 .thClass {
-  position: sticky;
+  /* position: sticky; */
+  display: block;
+  z-index: 3;
+  margin-right: auto;
+  margin-bottom: 0px;
   top: 0;
   overflow: hidden;
   text-decoration: underline;
@@ -2391,7 +2405,8 @@ export default class FDComboBox extends Mixins(FdControlVue) {
 }
 .tdClass {
   width: 15px;
-  border-right: 1px solid;
+  border-right: 1px solid !important;
+  padding-left: 4px;
 }
 .tdClassIn {
   width: 10px;
@@ -2402,24 +2417,52 @@ export default class FDComboBox extends Mixins(FdControlVue) {
   margin: 0;
 }
 .hrStyle {
-  display: block !important;
+  display: inline-block !important;
   margin: 0px;
   width: 100% !important;
+  background-color: black;
+  height: 0.5px;
+  z-index: 3;
+  position: relative;
+  border-bottom: 0px !important;
 }
 .forPlain {
   background-image: none;
 }
 .tHeadStyle {
+  width: auto !important;
+  white-space: nowrap;
   position: sticky;
   top: 0px;
-  z-index: 1;
+  z-index: 3 !important;
+}
+.square {
+  border-bottom: 1px solid;
+  border-right: 1px solid;
+  display: inline-block !important;
+  width: 13px !important;
 }
 .column-item {
   white-space: pre;
   display: flex;
 }
 .colHeadsClass {
-  display: inline-block;
+  /* min-width: 250px; */
+  /* width: auto !important; */
+  display: inline-block !important;
+  padding-left: 3px;
+  border-left: 1px solid;
+  border-right: 0px solid black !important;
+  border-bottom: 1.5px solid;
+}
+.hr-line {
+    display: inline-block ;
+    z-index: 3;
+    position: relative;
+    background-color: black;
+    width: 100% !important;
+    height: 0px;
+    margin: 0;
 }
 .bar {
   font-size: 13px;

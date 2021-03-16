@@ -182,7 +182,7 @@
                   :style="tdStyleObj"
                   v-if="properties.ListStyle === 1 && properties.RowSource !== ''"
                   class="tdClass"
-                ><span class="square"></span></template>
+                ><div class="square"></div></template>
                 <template
                   v-for="(a, columnIndex) in extraDatas.ColumnHeadsValues"
                 >
@@ -293,6 +293,7 @@ import {
 } from 'vue-property-decorator'
 import FdControlVue from '@/api/abstract/FormDesigner/FdControlVue'
 import { EventBus } from '@/FormDesigner/event-bus'
+import { listStyle } from '@/FormDesigner/controls-select-types'
 @Component({
   name: 'FDComboBox'
 })
@@ -560,7 +561,8 @@ export default class FDComboBox extends Mixins(FdControlVue) {
     this.selectionData[0] = a.innerText
     for (let i = 0; i < this.extraDatas.RowSourceData!.length; i++) {
       const b = this.trRef[i].children[0] as HTMLDivElement
-      if (a.innerText === b.innerText) {
+      const aInnerText = a.innerText.split('\n')
+      if (aInnerText[0] === b.innerText) {
         if (this.properties.TextColumn === -1) {
           const text = this.extraDatas.RowSourceData![i][0]
           this.updateDataModel({ propertyName: 'Text', value: text })
@@ -757,7 +759,7 @@ export default class FDComboBox extends Mixins(FdControlVue) {
             const headWidth = this.comboRef.children[0].children[0].children[j] as HTMLDivElement
             if (this.properties.ColumnCount! === -1) {
               if (j >= 0 && j < this.extraDatas.RowSourceData!.length) {
-                headWidth.style.minWidth = '100px'
+                // headWidth.style.minWidth = '100px'
               }
             }
           }
@@ -831,7 +833,6 @@ export default class FDComboBox extends Mixins(FdControlVue) {
                 }
               }
             } else {
-              console.log(this.$refs)
               Vue.nextTick(() => {
                 if (this.comboRef && this.comboRef.children[0] && this.comboRef.children[0].children[0]) {
                   for (let j = 0; j < this.comboRef.children[0].children[0].children.length; j++) {
@@ -1099,9 +1100,10 @@ export default class FDComboBox extends Mixins(FdControlVue) {
               }
             } else {
               Vue.nextTick(() => {
+                // console.log('bbbbbbb')
                 if (this.comboRef && this.comboRef.children[0] && this.comboRef.children[0].children[0]) {
                   for (let j = 0; j < this.comboRef.children[0].children[0].children.length; j++) {
-                    if (this.comboRef && this.comboRef.children[0] && this.comboRef.children[0].children[0] && this.comboRef.children[0].children[0].children[j]) {
+                    if (this.comboRef && this.comboRef.children[0] && this.comboRef.children[0].children[0] && this.comboRef.children[0].children[0].children[j].className !== 'square') {
                       const headWidth = this.comboRef.children[0].children[0].children[j] as HTMLDivElement
                       if (this.properties.ColumnCount !== -1) {
                         if (j === this.comboRef.children[0].children[0].children.length - 1) {
@@ -1111,7 +1113,7 @@ export default class FDComboBox extends Mixins(FdControlVue) {
                             headWidth.style.width = finalWidths[j] - 3 + 'px'
                           }
                         } else {
-                          headWidth.style.width = '100px'
+                          // headWidth.style.width = '100px'
                         }
                       }
                     }
@@ -1144,6 +1146,7 @@ export default class FDComboBox extends Mixins(FdControlVue) {
           }
         }
       } else if (this.itemsRef && this.comboRef.children[1]) {
+        // console.log('Column Widths is PRSENT')
         finalWidths = this.calculateColumnWidths()
         if (this.comboRef.children[1].children[0]) {
           for (let i = 0; i < this.comboRef.children[1].children.length; i++) {
@@ -1220,73 +1223,83 @@ export default class FDComboBox extends Mixins(FdControlVue) {
                 }
               }
             } else {
+              // debugger
+              // console.log('ccccccc')
               for (let j = 0; j < this.comboRef.children[1].children[i].children.length; j++) {
                 const width = this.comboRef.children[1].children[i].children[j] as HTMLDivElement
-                if (j > 0) {
-                  if (j > this.properties.ColumnCount! && j > this.extraDatas.RowSourceData!.length - 1) {
-                    width.style.width = '0px'
-                  } else {
-                    width.style.display = 'inline-block'
-                    if (this.properties.ColumnCount === 1) {
-                      if (finalWidths[0] === 0) {
-                        width.style.width = '0px'
-                      } else if (this.properties.Width! > finalWidths[0]) {
-                        if (this.properties.Width! < 10) {
-                          width.style.width = this.properties.Width! + 'px'
-                        } else {
-                          width.style.width = this.properties.Width! - 3 + 'px'
-                        }
-                      } else {
-                        if (finalWidths[0] < 10) {
-                          width.style.width = finalWidths[0] + 'px'
-                        } else {
-                          width.style.width = finalWidths[0] - 3 + 'px'
-                        }
-                      }
+                if (this.comboRef && this.comboRef.children[0] && this.comboRef.children[0].children[0] && this.comboRef.children[0].children[0].children[j] && this.comboRef.children[0].children[0].children[j].className !== 'square') {
+                  if (j > 0) {
+                    if (j > this.properties.ColumnCount! && j > this.extraDatas.RowSourceData!.length - 1) {
+                      // console.log('columnCount', this.properties.ColumnCount)
+                      width.style.width = '0px'
                     } else {
-                      width.style.minWidth = '0px'
-                      if (finalWidths[j - 1] < 10) {
-                        width.style.width = finalWidths[j - 1] + 'px'
-                      } else {
-                        width.style.width = finalWidths[j - 1] - 3 + 'px'
-                      }
-                    }
-                  }
-                  if (this.comboRef && this.comboRef.children[0] && this.comboRef.children[0].children[0] && this.comboRef.children[0].children[0].children[j]) {
-                    const headWidth = this.comboRef.children[0].children[0].children[j] as HTMLDivElement
-                    if (this.properties.ColumnCount === -1) {
-                      headWidth.style.display = 'inline-block'
-                      headWidth.style.minWidth = '0px'
-                      if (finalWidths[j] < 10) {
-                        headWidth.style.width = finalWidths[j] + 'px'
-                      } else {
-                        headWidth.style.width = finalWidths[j] - 3 + 'px'
-                      }
-                    } else if (j >= this.properties.ColumnCount!) {
-                      headWidth.style.width = '0px'
-                    } else {
-                      headWidth.style.display = 'inline-block'
+                      width.style.display = 'inline-block'
                       if (this.properties.ColumnCount === 1) {
                         if (finalWidths[0] === 0) {
-                          headWidth.style.width = '0px'
+                          width.style.width = '0px'
                         } else if (this.properties.Width! > finalWidths[0]) {
                           if (this.properties.Width! < 10) {
-                            headWidth.style.width = this.properties.Width! + 'px'
+                            width.style.width = this.properties.Width! + 'px'
                           } else {
-                            headWidth.style.width = this.properties.Width! - 3 + 'px'
+                            width.style.width = this.properties.Width! - 3 + 'px'
                           }
                         } else {
                           if (finalWidths[0] < 10) {
-                            headWidth.style.width = finalWidths[0] + 'px'
+                            width.style.width = finalWidths[0] + 'px'
                           } else {
-                            headWidth.style.width = finalWidths[0] - 3 + 'px'
+                            width.style.width = finalWidths[0] - 3 + 'px'
                           }
                         }
                       } else {
+                        width.style.minWidth = '0px'
+                        if (finalWidths[j - 1] < 10) {
+                          width.style.width = finalWidths[j - 1] + 'px'
+                        } else {
+                          width.style.width = finalWidths[j - 1] - 3 + 'px'
+                        }
+                      }
+                    }
+                    if (this.comboRef && this.comboRef.children[0] && this.comboRef.children[0].children[0] && this.comboRef.children[0].children[0].children[j]) {
+                      const headWidth = this.comboRef.children[0].children[0].children[j + 1] as HTMLDivElement
+                      // headWidth.style.minWidth = '100px'
+                      if (this.properties.ColumnCount === -1) {
+                        headWidth.style.display = 'inline-block'
+                        headWidth.style.minWidth = '0px'
                         if (finalWidths[j] < 10) {
                           headWidth.style.width = finalWidths[j] + 'px'
                         } else {
                           headWidth.style.width = finalWidths[j] - 3 + 'px'
+                        }
+                      } else if (j >= this.properties.ColumnCount!) {
+                        headWidth.style.width = '0px'
+                      } else {
+                        headWidth.style.display = 'inline-block'
+                        if (this.properties.ColumnCount === 1) {
+                          if (finalWidths[0] === 0) {
+                            headWidth.style.width = '0px'
+                          } else if (this.properties.Width! > finalWidths[0]) {
+                            if (this.properties.Width! < 10) {
+                              headWidth.style.width = this.properties.Width! + 'px'
+                            } else {
+                              headWidth.style.width = this.properties.Width! - 3 + 'px'
+                            }
+                          } else {
+                            if (finalWidths[0] < 10) {
+                              headWidth.style.width = finalWidths[0] + 'px'
+                            } else {
+                              headWidth.style.width = finalWidths[0] - 3 + 'px'
+                            }
+                          }
+                        } else {
+                          console.log('Final width', finalWidths[j])
+                          console.log('Final width', finalWidths[j - 1])
+                          console.log('Final width', finalWidths[j - 2])
+                          console.log('Final width', finalWidths[j - 3])
+                          if (finalWidths[j] < 10) {
+                            headWidth.style.width = finalWidths[j] + 'px'
+                          } else {
+                            headWidth.style.width = finalWidths[j] - 3 + 'px'
+                          }
                         }
                       }
                     }
@@ -1575,7 +1588,6 @@ export default class FDComboBox extends Mixins(FdControlVue) {
   protected get colHeadsStyle (): Partial<CSSStyleDeclaration> {
     const controlProp = this.properties
     this.updateColumns()
-    console.log(this.$refs)
     return {
       backgroundColor: controlProp.BackColor,
       width: '100%'
@@ -2393,6 +2405,7 @@ export default class FDComboBox extends Mixins(FdControlVue) {
   display: grid;
 }
 .thClass {
+  /* padding-left: 13px; */
   /* position: sticky; */
   display: block;
   z-index: 3;

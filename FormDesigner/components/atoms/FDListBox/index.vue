@@ -1405,7 +1405,7 @@ export default class FDListBox extends Mixins(FdControlVue) {
   grid-template-columns: 100%;
 }
 .table-style {
-  min-width: min-content;
+  /* min-width: min-content; */
   width: 100%;
 }
 .theadClass {

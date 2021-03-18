@@ -2446,7 +2446,7 @@ export default class FDComboBox extends Mixins(FdControlVue) {
   z-index: 3 !important;
 }
 .square {
-  border-bottom: 1px solid;
+  border-bottom: 1.5px solid;
   border-right: 1px solid;
   display: inline-block !important;
   width: 13px !important;
